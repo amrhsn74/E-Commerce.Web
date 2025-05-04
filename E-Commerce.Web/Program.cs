@@ -1,44 +1,50 @@
 
+using Azure;
 using DomainLayer.Contracts;
+using E_Commerce.Web.CustomMiddlewares;
+using E_Commerce.Web.Extensions;
+using E_Commerce.Web.Factories;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.Data;
+using Persistence.Repositories;
+using Service;
+using ServiceAbstraction;
+using Shared.ErrorModels;
 
 namespace E_Commerce.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             #region Add services to the container
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerServices();
 
-            builder.Services.AddDbContext<StoreDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
-            builder.Services.AddScoped<IDataSeeding, DataSeeding>();
+            builder.Services.AddInfrastructureServices(builder.Configuration);
+            builder.Services.AddApplicationServices();
+            builder.Services.AddWebApplicationServices();
             #endregion
 
             var app = builder.Build();
 
-            using var Scope = app.Services.CreateScope();
-            var DataSeedingObj = Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            DataSeedingObj.DataSeed();
+            await app.SeedDatabaseAsync();
+
+            app.UseCustomExceptionMiddleware();
+
             #region Configure the HTTP request pipeline
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerMiddlewares();
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.MapControllers();
             #endregion
