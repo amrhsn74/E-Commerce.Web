@@ -10,7 +10,7 @@ using DomainLayer.Models.ProductModule;
 using Service.Specifications;
 using ServiceAbstraction;
 using Shared;
-using Shared.DTOs;
+using Shared.DTOs.ProductModuleDto;
 
 namespace Service
 {

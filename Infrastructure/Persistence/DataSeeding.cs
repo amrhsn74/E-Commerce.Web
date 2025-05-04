@@ -13,7 +13,7 @@ namespace Persistence
 {
     public class DataSeeding(StoreDbContext _dbContext) : IDataSeeding
     {
-        public void DataSeed()
+        public async Task DataSeed()
         {
             try
             {
@@ -50,11 +50,12 @@ namespace Persistence
                         _dbContext.Products.AddRange(Products);
                 }
 
-                _dbContext.SaveChanges();
+               await _dbContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
              // TODO
+                throw;
             }
         }
     }
