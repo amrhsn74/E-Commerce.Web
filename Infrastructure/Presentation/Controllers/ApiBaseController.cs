@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
 {
-    
+    [ApiController]
+    [Route("api/controller")]
     public class ApiBaseController : ControllerBase
     {
         // This is a base controller for all API controllers in the application.
