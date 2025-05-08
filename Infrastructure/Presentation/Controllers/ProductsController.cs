@@ -10,9 +10,7 @@ using Shared.DTOs.ProductModuleDto;
 
 namespace Presentation.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")] // BaseURL/api/controller => 'Products'
-    public class ProductsController(IServiceManager serviceManager) : ControllerBase
+    public class ProductsController(IServiceManager serviceManager) : ApiBaseController
     {
         [HttpGet]
         // GET: baseURL/api/products

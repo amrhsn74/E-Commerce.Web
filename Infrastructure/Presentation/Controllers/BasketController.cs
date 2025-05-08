@@ -9,9 +9,8 @@ using Shared.DTOs.BasketModuleDto;
 
 namespace Presentation.Controllers
 {
-    [ApiController]
-    [Route("api/[Controller]")]
-    public class BasketController(IServiceManager serviceManager) : ControllerBase
+  
+    public class BasketController(IServiceManager serviceManager) : ApiBaseController
     {
         [HttpGet]
         public async Task<ActionResult<BasketDto>> GetBasket(string Key)

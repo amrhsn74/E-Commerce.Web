@@ -5,11 +5,15 @@ namespace E_Commerce.Web.Extensions
 {
     public static class WebApplicationRegisteration
     {
-        public static async Task SeedDatabaseAsync(this WebApplication app)
+        public static async Task<WebApplication> SeedDatabaseAsync(this WebApplication app)
         {
             using var Scope = app.Services.CreateScope();
             var DataSeedingObj = Scope.ServiceProvider.GetRequiredService<IDataSeeding>();
-            await DataSeedingObj.DataSeed();
+            
+            await DataSeedingObj.DataSeedAsync();
+            await DataSeedingObj.IdentityDataSeedAsync();
+
+            return app;
         }
 
         public static IApplicationBuilder UseCustomExceptionMiddleware(this IApplicationBuilder app)

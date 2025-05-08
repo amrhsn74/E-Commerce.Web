@@ -37,24 +37,28 @@ namespace E_Commerce.Web.CustomMiddlewares
             // 1.
             //httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
             // 2.
-            httpContext.Response.StatusCode = ex switch
+
+            var Response = new ErrorToReturn()
+            {
+                ErrorMessage = ex.Message,
+            };
+            Response.StatusCode = ex switch
             {
                 NotFoundException => StatusCodes.Status404NotFound,
+                UnauthorizedException => StatusCodes.Status401Unauthorized,
+                BadRequestException badRequestException => GetBadRequestErrors(badRequestException, Response),
                 _ => StatusCodes.Status500InternalServerError
             };
 
-            // Set Content Type For Response
-            //httpContext.Response.ContentType = "application/json";
-
-            // Response Object
-            var Response = new ErrorToReturn()
-            {
-                StatusCode = httpContext.Response.StatusCode,
-                ErrorMessage = ex.Message,
-            };
-
+            httpContext.Response.StatusCode = Response.StatusCode; // Set Status Code For Response
             // Return Object as JSON
             await httpContext.Response.WriteAsJsonAsync(Response);  // ==> Alternative for Setting Content Type
+        }
+
+        private static int GetBadRequestErrors(BadRequestException badRequestException, ErrorToReturn response)
+        {
+            response.Errors = badRequestException.Errors;
+            return StatusCodes.Status400BadRequest;
         }
 
         private static async Task HandleNotFoundEndpointAsync(HttpContext httpContext)

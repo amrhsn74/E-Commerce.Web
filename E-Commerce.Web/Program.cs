@@ -35,9 +35,10 @@ namespace E_Commerce.Web
 
             await app.SeedDatabaseAsync();
 
-            app.UseCustomExceptionMiddleware();
 
             #region Configure the HTTP request pipeline
+            app.UseCustomExceptionMiddleware();
+            
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwaggerMiddlewares();
